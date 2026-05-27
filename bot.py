@@ -1633,8 +1633,8 @@ async def send_daily_report():
 
 async def main():
     init_db()
+scheduler = AsyncIOScheduler(timezone="Asia/Tashkent")
 
-    scheduler = AsyncIOScheduler(timezone=str(UZ_TZ))
     scheduler.add_job(send_daily_report, "cron", hour=20, minute=0)
     scheduler.start()
 
