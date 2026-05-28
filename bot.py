@@ -342,21 +342,24 @@ async def cashback_start(message: Message, state: FSMContext):
 
     if lang == "ru":
         text = (
-            "💰 Условия cashback\n\n"
-            "📸 5⭐ + фото = 10 000\n"
-            "✍️ 5⭐ + текст = 7 000\n"
-            "⭐ Только 5⭐ = 5 000\n\n"
-            "Отправьте скриншот отзыва"
+           "💰 Условия получения cashback\n\n"
+    "Cashback выплачивается только за отзыв 5⭐.\n\n"
+    "Сумма выплаты:\n\n"
+    "1️⃣ Отзыв 5⭐ с фото и положительным текстом — 10 000 сум\n\n"
+    "2️⃣ Отзыв 5⭐ без фото, но с положительным текстом — 7 000 сум\n\n"
+    "3️⃣ Только оценка 5⭐ — 5 000 сум\n\n"
+    "📌 Чтобы получить cashback, отправьте скриншот вашего отзыва 5⭐."
         )
     else:
-        text = (
-            "💰 Cashback shartlari\n\n"
-            "📸 5⭐ + rasm = 10 000\n"
-            "✍️ 5⭐ + matn = 7 000\n"
-            "⭐ Faqat 5⭐ = 5 000\n\n"
-            "Sharh screenshotini yuboring"
-        )
-
+        text =  (
+    "💰 Cashback olish shartlari\n\n"
+    "Cashback faqat 5⭐ sharh qoldirilgan holatda beriladi.\n\n"
+    "To‘lov miqdori:\n\n"
+    "1️⃣ Rasmli + 5⭐ ijobiy sharh uchun — 10 000 so‘m\n\n"
+    "2️⃣ Rasmsiz + 5⭐ ijobiy so‘zli sharh uchun — 7 000 so‘m\n\n"
+    "3️⃣ Faqat 5⭐ baho uchun — 5 000 so‘m\n\n"
+    "📌 Cashback olish uchun 5⭐ sharh qoldirganingiz skrinshotini yuboring."
+)
     await message.answer(text)
 
     await state.set_state(CashbackState.waiting_screenshot)
