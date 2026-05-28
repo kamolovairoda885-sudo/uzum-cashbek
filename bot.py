@@ -1511,12 +1511,11 @@ async def template_choose(callback: CallbackQuery):
 
     preferred_lang = item["language"]
 
-    
-        await callback.message.answer(
-    "Xaridor tili: " + ("🇷🇺 Русский" if preferred_lang == "ru" else "🇺🇿 O'zbekcha") + "\n\n"
-    "Qaysi tilda yuboramiz?",
-    reply_markup=template_lang_keyboard(complaint_id, template_key, preferred_lang)
-)
+    lang_label = "🇷🇺 Русский" if preferred_lang == "ru" else "🇺🇿 O'zbekcha"
+    await callback.message.answer(
+        "Xaridor tili: " + lang_label + "\n\nQaysi tilda yuboramiz?",
+        reply_markup=template_lang_keyboard(complaint_id, template_key, preferred_lang)
+    )
     await callback.answer()
 
 
@@ -1668,20 +1667,6 @@ async def main():
     init_db()
 
     scheduler = AsyncIOScheduler(timezone=str(UZ_TZ))
-    scheduler.add_job(send_daily_report, "cron", hour=20, minute=0)
-    scheduler.start()
-
-    logger.info("Uzum Cashback Bot ishga tushdi...")
-    await dp.start_polling(bot)
-
-
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
-async def main():
-    init_db()
-
-    scheduler = AsyncIOScheduler(timezone="Asia/Tashkent")
     scheduler.add_job(send_daily_report, "cron", hour=20, minute=0)
     scheduler.start()
 
