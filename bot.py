@@ -1677,3 +1677,17 @@ async def main():
 if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
+async def main():
+    init_db()
+
+    scheduler = AsyncIOScheduler(timezone="Asia/Tashkent")
+    scheduler.add_job(send_daily_report, "cron", hour=20, minute=0)
+    scheduler.start()
+
+    logger.info("Uzum Cashback Bot ishga tushdi...")
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
