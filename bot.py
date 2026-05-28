@@ -1511,11 +1511,12 @@ async def template_choose(callback: CallbackQuery):
 
     preferred_lang = item["language"]
 
-    await callback.message.answer(
-        f"Xaridor tili: {'🇷🇺 Русский' if preferred_lang == 'ru' else '🇺🇿 O\'zbekcha'}\n\n"
-        "Qaysi tilda yuboramiz?",
-        reply_markup=template_lang_keyboard(complaint_id, template_key, preferred_lang)
-    )
+    
+        await callback.message.answer(
+    "Xaridor tili: " + ("🇷🇺 Русский" if preferred_lang == "ru" else "🇺🇿 O'zbekcha") + "\n\n"
+    "Qaysi tilda yuboramiz?",
+    reply_markup=template_lang_keyboard(complaint_id, template_key, preferred_lang)
+)
     await callback.answer()
 
 
