@@ -894,9 +894,9 @@ async def cashback_start(message: Message, state: FSMContext):
             "📸 Sharh skrinshotini qanday olish kerak?\n\n"
             "1️⃣ Uzum ilovasini oching\n"
             "2️⃣ Profil → Sharhlarim ga kiring\n"
-            "3️⃣ Sotib olgan mahsulotingizga sharh qoldiring\n"
+            "3️⃣ Sotib olgan mahsulotingizga "Baholanishi kutilmoqd" bo'limida sharh qoldiring\n"
             "4️⃣ Sharh qoldirilgandan keyin Qoldirilgan fikrlar bo'limiga o'ting\n"
-            "5️⃣ Publikatsiya qilindi yozuvi ko'ringan sahifadan skrinshot oling\n"
+            "5️⃣ Publikatsiya qilindi yozuvi ko'ringandan keyin sahifadan skrinshot oling\n"
             "6️⃣ Skrinshotni bizga yuboring — cashback oling! 🎉"
         )
 
@@ -1715,6 +1715,17 @@ async def admin_photo_file_id(message: Message, state: FSMContext):
 @dp.message(F.text & ~F.text.startswith("/"))
 async def free_message(message: Message, state: FSMContext):
     if message.from_user.id == ADMIN_ID:
+        return
+
+    # Tugmalar har doim ishlashi kerak
+    known_buttons = [
+        "💰 Cashback olish", "💰 Получить cashback",
+        "📝 Shikoyat qoldirish", "📝 Оставить жалобу",
+        "🌐 Tilni o'zgartirish", "🌐 Изменить язык",
+        "🧾 Chek so'rash", "🧾 Запросить чек",
+        "⏭ O'tkazib yuborish", "⏭ Пропустить",
+    ]
+    if message.text in known_buttons:
         return
 
     current_state = await state.get_state()
