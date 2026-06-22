@@ -35,6 +35,9 @@ CASHBACK_DAILY_LIMIT = int(os.getenv("CASHBACK_DAILY_LIMIT", "3"))
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN topilmadi.")
 
+GUIDE_PHOTO_1 = "AgACAgIAAxkBAAFNGndqOPSDkHmiwPX-Y0jKjxLx71qAYwAClxhrG4SNyEkjmFMcJBb3sAEAAwIAA3cAAzwE"
+GUIDE_PHOTO_2 = "AgACAgIAAxkBAAFNGntqOPTDSYSHBvGcVxJpg2X1YNYTPQACmRhrG4SNyEmrjuKgEHOfUAEAAwIAA3kAAzwE"
+
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
@@ -443,6 +446,7 @@ class AdminReplyState(StatesGroup):
     waiting_custom_reply = State()
     waiting_template_edit = State()
     waiting_check_photo = State()
+    waiting_free_reply = State()
 
 
 # =========================
@@ -868,6 +872,35 @@ async def cashback_start(message: Message, state: FSMContext):
         )
         return
 
+    # Yo'riqnoma yuborish
+    if lang == "ru":
+        guide_text = (
+            "📸 Как сделать скриншот отзыва?\n\n"
+            "1️⃣ Откройте приложение Uzum\n"
+            "2️⃣ Перейдите в Профиль → Мои отзывы\n"
+            "3️⃣ Напишите отзыв на купленный товар\n"
+            "4️⃣ После публикации перейдите в раздел Оставленные отзывы\n"
+            "5️⃣ Сделайте скриншот страницы где написано Публикация выполнена\n"
+            "6️⃣ Отправьте скриншот нам — получите cashback! 🎉"
+        )
+    else:
+        guide_text = (
+            "📸 Sharh skrinshotini qanday olish kerak?\n\n"
+            "1️⃣ Uzum ilovasini oching\n"
+            "2️⃣ Profil → Sharhlarim ga kiring\n"
+            "3️⃣ Sotib olgan mahsulotingizga sharh qoldiring\n"
+            "4️⃣ Sharh qoldirilgandan keyin Qoldirilgan fikrlar bo'limiga o'ting\n"
+            "5️⃣ Publikatsiya qilindi yozuvi ko'ringan sahifadan skrinshot oling\n"
+            "6️⃣ Skrinshotni bizga yuboring — cashback oling! 🎉"
+        )
+
+    try:
+        await bot.send_photo(message.chat.id, GUIDE_PHOTO_1)
+        await bot.send_photo(message.chat.id, GUIDE_PHOTO_2, caption=guide_text)
+    except Exception as e:
+        logger.error(f"Yo'riqnoma rasmini yuborishda xato: {e}")
+        await message.answer(guide_text)
+
     await message.answer(
         RU_CASHBACK_RULES if lang == "ru" else UZ_CASHBACK_RULES,
         reply_markup=main_menu(lang)
@@ -987,6 +1020,10 @@ async def cashback_approve(callback: CallbackQuery):
 
     await callback.message.answer(
         f"✅ Cashback tasdiqlandi: {amount_pretty} so'm\n\n"
+        f"👤 Xaridor: @{item['username'] or 'username yoq'}\n"
+        f"📛 Ism: {item['full_name'] or '-'}\n"
+        f"💳 Karta: {item['card_number']}\n"
+        f"👤 Karta egasi: {item['card_owner']}\n\n"
         "Pul o'tkazilgandan keyin '💳 To'landi' tugmasini bosing.",
         reply_markup=cashback_paid_keyboard(request_id)
     )
@@ -1045,7 +1082,15 @@ async def cashback_paid(callback: CallbackQuery, state: FSMContext):
 
     # Avval chek so'raymiz
     await state.update_data(cashback_request_id=request_id)
-    await callback.message.answer("📸 Endi chek rasmini yuboring:")
+    username = item["username"] or "username yoq"
+    await callback.message.answer(
+        f"📸 Chek rasmini yuboring:\n\n"
+        f"👤 Xaridor: @{username}\n"
+        f"📛 Ism: {item['full_name'] or '-'}\n"
+        f"💳 Karta: {item['card_number']}\n"
+        f"👤 Karta egasi: {item['card_owner']}\n"
+        f"💰 Summa: {item['amount']:,} so'm".replace(",", " ")
+    )
     await state.set_state(AdminReplyState.waiting_check_photo)
     await callback.answer()
 
@@ -1642,6 +1687,98 @@ async def hisobot_command(message: Message):
     stats = get_report_stats()
     await message.answer(format_report(stats))
 
+
+
+# =========================
+# ERKIN XABAR
+# =========================
+
+@dp.message(F.text & ~F.text.startswith("/"))
+async def free_message(message: Message, state: FSMContext):
+    if message.from_user.id == ADMIN_ID:
+        return
+
+    current_state = await state.get_state()
+    if current_state is not None:
+        return
+
+    lang = get_user_language(message.from_user.id)
+
+    known_buttons = [
+        "💰 Cashback olish", "💰 Получить cashback",
+        "📝 Shikoyat qoldirish", "📝 Оставить жалобу",
+        "🌐 Tilni o'zgartirish", "🌐 Изменить язык",
+        "🧾 Chek so'rash", "🧾 Запросить чек",
+        "⏭ O'tkazib yuborish", "⏭ Пропустить",
+    ]
+
+    if message.text in known_buttons:
+        return
+
+    # Adminga xabar yuborish
+    if ADMIN_ID:
+        try:
+            username = f"@{message.from_user.username}" if message.from_user.username else message.from_user.full_name
+            admin_text = (
+                f"💬 Xaridor xabar yozdi\n\n"
+                f"👤 Xaridor: {username}\n"
+                f"🆔 Telegram ID: {message.from_user.id}\n\n"
+                f"📝 Xabar:\n{message.text}"
+            )
+            kb = InlineKeyboardBuilder()
+            kb.button(text="✉️ Javob berish", callback_data=f"free_reply:{message.from_user.id}")
+            await bot.send_message(ADMIN_ID, admin_text, reply_markup=kb.as_markup())
+        except Exception as e:
+            logger.error(f"Erkin xabarni adminga yuborishda xato: {e}")
+
+    await message.answer(
+        "✅ Xabaringiz qabul qilindi. Tez orada javob beriladi."
+        if lang == "uz"
+        else "✅ Ваше сообщение принято. Ответ придёт в ближайшее время.",
+        reply_markup=main_menu(lang)
+    )
+
+
+@dp.callback_query(F.data.startswith("free_reply:"))
+async def free_reply_callback(callback: CallbackQuery, state: FSMContext):
+    if callback.from_user.id != ADMIN_ID:
+        await callback.answer("Ruxsat yo'q.", show_alert=True)
+        return
+
+    target_id = int(callback.data.split(":")[1])
+    await state.update_data(free_reply_target_id=target_id)
+    await callback.message.answer("✉️ Xaridorga yuboriladigan javobni yozing:")
+    await state.set_state(AdminReplyState.waiting_free_reply)
+    await callback.answer()
+
+
+@dp.message(AdminReplyState.waiting_free_reply)
+async def admin_free_reply(message: Message, state: FSMContext):
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    data = await state.get_data()
+    target_id = data.get("free_reply_target_id")
+
+    if not target_id:
+        await message.answer("Xaridor topilmadi.")
+        await state.clear()
+        return
+
+    lang = get_user_language(target_id)
+
+    try:
+        await bot.send_message(
+            target_id,
+            f"✉️ Admin javobi:\n\n{message.text.strip()}",
+            reply_markup=main_menu(lang)
+        )
+        await message.answer("✅ Javob xaridorga yuborildi.")
+    except Exception as e:
+        logger.error(f"Erkin javob yuborishda xato: {e}")
+        await message.answer("❌ Xabarni yuborishda xato.")
+
+    await state.clear()
 
 # =========================
 # AVTOMATIK KUNLIK HISOBOT
