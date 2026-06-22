@@ -1691,6 +1691,23 @@ async def hisobot_command(message: Message):
 
 
 
+
+@dp.message(Command("getid"))
+async def getid_command(message: Message):
+    if message.from_user.id != ADMIN_ID:
+        return
+    await message.answer("📎 Rasmni yuboring — file_id olasiz:")
+
+
+@dp.message(F.photo & (F.from_user.id == ADMIN_ID))
+async def admin_photo_file_id(message: Message, state: FSMContext):
+    current_state = await state.get_state()
+    # Faqat hech qanday state yo'q bo'lganda file_id yuborsin
+    if current_state is not None:
+        return
+    file_id = message.photo[-1].file_id
+    await message.answer(f"📎 File ID:\n<code>{file_id}</code>", parse_mode="HTML")
+
 # =========================
 # ERKIN XABAR
 # =========================
