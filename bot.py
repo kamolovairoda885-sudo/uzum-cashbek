@@ -894,9 +894,9 @@ async def cashback_start(message: Message, state: FSMContext):
             "📸 Sharh skrinshotini qanday olish kerak?\n\n"
             "1️⃣ Uzum ilovasini oching\n"
             "2️⃣ Profil → Sharhlarim ga kiring\n"
-            "3️⃣ Sotib olgan mahsulotingizga "Baholanishi kutilmoqd" bo'limida sharh qoldiring\n"
+            "3️⃣ Sotib olgan mahsulotingizga sharh qoldiring\n"
             "4️⃣ Sharh qoldirilgandan keyin Qoldirilgan fikrlar bo'limiga o'ting\n"
-            "5️⃣ Publikatsiya qilindi yozuvi ko'ringandan keyin sahifadan skrinshot oling\n"
+            "5️⃣ Publikatsiya qilindi yozuvi ko'ringan sahifadan skrinshot oling\n"
             "6️⃣ Skrinshotni bizga yuboring — cashback oling! 🎉"
         )
 
