@@ -35,8 +35,8 @@ CASHBACK_DAILY_LIMIT = int(os.getenv("CASHBACK_DAILY_LIMIT", "3"))
 if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN topilmadi.")
 
-GUIDE_PHOTO_1 = "AgACAgIAAxkBAAFNGndqOPSDkHmiwPX-Y0jKjxLx71qAYwAClxhrG4SNyEkjmFMcJBb3sAEAAwIAA3cAAzwE"
-GUIDE_PHOTO_2 = "AgACAgIAAxkBAAFNGntqOPTDSYSHBvGcVxJpg2X1YNYTPQACmRhrG4SNyEmrjuKgEHOfUAEAAwIAA3kAAzwE"
+GUIDE_PHOTO_1 = "AgACAgIAAxkBAAFNG01qOPx_NOIAAZ2vBS6rP6EAARTryiQ2AAIsGWsbBwjJSdwAARL0poSV9wEAAwIAA3kAAzwE"
+GUIDE_PHOTO_2 = "AgACAgIAAxkBAAFNG1FqOPyYmo0E3RdeTkn4zkpK8-C-nwACLRlrGwcIyUmKLwazlU3qFAEAAwIAA3kAAzwE"
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -872,7 +872,13 @@ async def cashback_start(message: Message, state: FSMContext):
         )
         return
 
-    # Yo'riqnoma yuborish
+    # 1. Avval cashback shartlari
+    await message.answer(
+        RU_CASHBACK_RULES if lang == "ru" else UZ_CASHBACK_RULES,
+        reply_markup=main_menu(lang)
+    )
+
+    # 2. Keyin yoriqnoma
     if lang == "ru":
         guide_text = (
             "📸 Как сделать скриншот отзыва?\n\n"
@@ -901,10 +907,6 @@ async def cashback_start(message: Message, state: FSMContext):
         logger.error(f"Yo'riqnoma rasmini yuborishda xato: {e}")
         await message.answer(guide_text)
 
-    await message.answer(
-        RU_CASHBACK_RULES if lang == "ru" else UZ_CASHBACK_RULES,
-        reply_markup=main_menu(lang)
-    )
     await state.set_state(CashbackState.waiting_screenshot)
 
 
