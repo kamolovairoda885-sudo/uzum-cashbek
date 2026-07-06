@@ -447,6 +447,7 @@ class AdminReplyState(StatesGroup):
     waiting_template_edit = State()
     waiting_check_photo = State()
     waiting_free_reply = State()
+    waiting_cashback_reply = State()
 
 
 # =========================
@@ -694,6 +695,9 @@ def cashback_admin_keyboard(request_id):
     kb.button(text="✅ 10 000 so'm", callback_data=f"cashback_approve:{request_id}:{CASHBACK_10000}")
     kb.button(text="✅ 7 000 so'm", callback_data=f"cashback_approve:{request_id}:{CASHBACK_7000}")
     kb.button(text="✅ 5 000 so'm", callback_data=f"cashback_approve:{request_id}:{CASHBACK_5000}")
+    kb.button(text="✉️ Xabar yozish", callback_data=f"cashback_reply:{request_id}")
+    kb.button(text="📸 Skrinshot noto'g'ri", callback_data=f"cashback_bad_screenshot:{request_id}")
+    kb.button(text="🛍 Bizning do'konga tegishli emas", callback_data=f"cashback_wrong_shop:{request_id}")
     kb.button(text="❌ Rad etish", callback_data=f"cashback_reject:{request_id}")
     kb.adjust(1)
     return kb.as_markup()
@@ -961,9 +965,19 @@ async def cashback_card_owner(message: Message, state: FSMContext):
     save_cashback_request(request_id, message, lang, card_number, card_owner)
 
     await message.answer(
-        "✅ Cashback so'rovingiz qabul qilindi.\n\nArizangiz admin tomonidan tekshiriladi."
+        (
+            "✅ Cashback so'rovingiz muvaffaqiyatli qabul qilindi.\n\n"
+            "📋 Arizangiz admin tomonidan 24 soat ichida ko'rib chiqiladi.\n"
+            "💳 Arizangiz tasdiqlangandan so'ng cashback mablag'i kartangizga o'tkaziladi.\n\n"
+            "⏳ Iltimos, kuting. Rahmat!"
+        )
         if lang == "uz"
-        else "✅ Ваша заявка на cashback принята.\n\nЗаявка будет проверена администратором.",
+        else (
+            "✅ Ваша заявка на cashback успешно принята.\n\n"
+            "📋 Заявка будет рассмотрена администратором в течение 24 часов.\n"
+            "💳 После одобрения cashback будет переведён на вашу карту.\n\n"
+            "⏳ Пожалуйста, ожидайте. Спасибо!"
+        ),
         reply_markup=main_menu(lang)
     )
 
@@ -1008,12 +1022,14 @@ async def cashback_approve(callback: CallbackQuery):
             item["telegram_id"],
             (
                 "✅ Cashback so'rovingiz tasdiqlandi.\n\n"
-                f"💰 Cashback miqdori: {amount_pretty} so'm\n"
-                "Tez orada kartangizga o'tkazib beriladi."
+                f"💰 Cashback miqdori: {amount_pretty} so'm\n\n"
+                "💳 To'lov 24 soat ichida kartangizga o'tkaziladi.\n"
+                "To'lov amalga oshirilgach, sizga chek ham yuboriladi."
             ) if lang == "uz" else (
                 "✅ Ваша заявка на cashback одобрена.\n\n"
-                f"💰 Сумма cashback: {amount_pretty} сум\n"
-                "Скоро сумма будет переведена на вашу карту."
+                f"💰 Сумма cashback: {amount_pretty} сум\n\n"
+                "💳 Выплата будет переведена на вашу карту в течение 24 часов.\n"
+                "После оплаты вам также будет отправлен чек."
             ),
             reply_markup=main_menu(lang)
         )
@@ -1029,6 +1045,142 @@ async def cashback_approve(callback: CallbackQuery):
         "Pul o'tkazilgandan keyin '💳 To'landi' tugmasini bosing.",
         reply_markup=cashback_paid_keyboard(request_id)
     )
+    await callback.answer()
+
+
+@dp.callback_query(F.data.startswith("cashback_reply:"))
+async def cashback_reply(callback: CallbackQuery, state: FSMContext):
+    if callback.from_user.id != ADMIN_ID:
+        await callback.answer("Ruxsat yo'q.", show_alert=True)
+        return
+
+    request_id = callback.data.split(":")[1]
+    item = get_cashback_request(request_id)
+
+    if not item:
+        await callback.answer("Ariza topilmadi.", show_alert=True)
+        return
+
+    await state.update_data(cashback_reply_request_id=request_id)
+    await callback.message.answer("✉️ Cashback so'ragan xaridorga yuboriladigan xabarni yozing:")
+    await state.set_state(AdminReplyState.waiting_cashback_reply)
+    await callback.answer()
+
+
+@dp.message(AdminReplyState.waiting_cashback_reply)
+async def admin_cashback_reply(message: Message, state: FSMContext):
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    data = await state.get_data()
+    request_id = data.get("cashback_reply_request_id")
+    item = get_cashback_request(request_id)
+
+    if not item:
+        await message.answer("Cashback arizasi topilmadi.")
+        await state.clear()
+        return
+
+    lang = item["language"]
+    reply_text = message.text.strip()
+
+    try:
+        await bot.send_message(
+            item["telegram_id"],
+            (
+                "✉️ Cashback bo'yicha admin xabari:\n\n"
+                f"{reply_text}"
+            ) if lang == "uz" else (
+                "✉️ Сообщение администратора по cashback:\n\n"
+                f"{reply_text}"
+            ),
+            reply_markup=main_menu(lang)
+        )
+        await message.answer("✅ Xabar cashback so'ragan xaridorga yuborildi.")
+    except Exception as e:
+        logger.error(f"Cashback xabarini yuborishda xato: {e}")
+        await message.answer("❌ Xabarni yuborishda xato.")
+
+    await state.clear()
+
+
+@dp.callback_query(F.data.startswith("cashback_bad_screenshot:"))
+async def cashback_bad_screenshot(callback: CallbackQuery):
+    if callback.from_user.id != ADMIN_ID:
+        await callback.answer("Ruxsat yo'q.", show_alert=True)
+        return
+
+    request_id = callback.data.split(":")[1]
+    item = get_cashback_request(request_id)
+
+    if not item:
+        await callback.answer("Ariza topilmadi.", show_alert=True)
+        return
+
+    if item["status"] not in ["pending", "approved"]:
+        await callback.answer("Bu ariza allaqachon ko'rib chiqilgan.", show_alert=True)
+        return
+
+    update_cashback_status(request_id, "rejected", 0)
+    lang = item["language"]
+
+    text = (
+        "❌ Yuborgan skrinshotingiz cashback shartlariga mos kelmadi.\n\n"
+        "Iltimos, yo'riqnoma bilan yana bir marta tanishib chiqing va to'g'ri skrinshot bilan qayta ariza qoldiring.\n\n"
+        "📌 Skrinshotda 5⭐ sharh va “Publikatsiya qilindi” yozuvi ko'rinib turishi kerak."
+        if lang == "uz"
+        else
+        "❌ Отправленный скриншот не соответствует условиям cashback.\n\n"
+        "Пожалуйста, ещё раз ознакомьтесь с инструкцией и отправьте новую заявку с правильным скриншотом.\n\n"
+        "📌 На скриншоте должны быть видны отзыв 5⭐ и надпись “Публикация выполнена”."
+    )
+
+    try:
+        await bot.send_message(item["telegram_id"], text, reply_markup=main_menu(lang))
+    except Exception as e:
+        logger.error(f"Noto'g'ri skrinshot xabarini yuborishda xato: {e}")
+
+    await callback.message.answer("📸 Xaridorga skrinshot noto'g'ri ekani va qayta ariza qoldirish kerakligi yuborildi.")
+    await callback.answer()
+
+
+@dp.callback_query(F.data.startswith("cashback_wrong_shop:"))
+async def cashback_wrong_shop(callback: CallbackQuery):
+    if callback.from_user.id != ADMIN_ID:
+        await callback.answer("Ruxsat yo'q.", show_alert=True)
+        return
+
+    request_id = callback.data.split(":")[1]
+    item = get_cashback_request(request_id)
+
+    if not item:
+        await callback.answer("Ariza topilmadi.", show_alert=True)
+        return
+
+    if item["status"] not in ["pending", "approved"]:
+        await callback.answer("Bu ariza allaqachon ko'rib chiqilgan.", show_alert=True)
+        return
+
+    update_cashback_status(request_id, "rejected", 0)
+    lang = item["language"]
+
+    text = (
+        "❌ Siz yuborgan sharh bizning do'konimiz mahsulotiga tegishli emas.\n\n"
+        "Cashback faqat bizning do'konimizdan xarid qilingan mahsulotlarga beriladi.\n\n"
+        "Agar xatolik bo'lgan bo'lsa, iltimos, bizning mahsulotimizga qoldirilgan 5⭐ sharh skrinshoti bilan qayta ariza yuboring."
+        if lang == "uz"
+        else
+        "❌ Отправленный вами отзыв относится не к товару нашего магазина.\n\n"
+        "Cashback предоставляется только за товары, приобретённые в нашем магазине.\n\n"
+        "Если произошла ошибка, пожалуйста, отправьте новую заявку со скриншотом отзыва 5⭐ именно на товар нашего магазина."
+    )
+
+    try:
+        await bot.send_message(item["telegram_id"], text, reply_markup=main_menu(lang))
+    except Exception as e:
+        logger.error(f"Do'konga tegishli emas xabarini yuborishda xato: {e}")
+
+    await callback.message.answer("🛍 Xaridorga mahsulot bizning do'konga tegishli emasligi yuborildi.")
     await callback.answer()
 
 
@@ -1130,9 +1282,9 @@ async def admin_check_photo(message: Message, state: FSMContext):
         try:
             await bot.send_message(
                 target_id,
-                "💳 Cashback to'lovingiz amalga oshirildi.\n\nQuyida to'lov cheki:"
+                "✅ Cashback muvaffaqiyatli kartangizga o'tkazildi.\n\n🧾 Quyida to'lov cheki yuborildi.\n\nXaridingiz uchun rahmat! 😊"
                 if lang == "uz"
-                else "💳 Cashback выплачен.\n\nНиже чек об оплате:",
+                else "✅ Cashback успешно переведён на вашу карту.\n\n🧾 Ниже отправлен чек об оплате.\n\nСпасибо за покупку! 😊",
                 reply_markup=cashback_paid_menu(lang)
             )
             if message.photo:
@@ -1757,6 +1909,7 @@ async def free_message(message: Message, state: FSMContext):
             )
             kb = InlineKeyboardBuilder()
             kb.button(text="✉️ Javob berish", callback_data=f"free_reply:{message.from_user.id}")
+            kb.adjust(1)
             await bot.send_message(ADMIN_ID, admin_text, reply_markup=kb.as_markup())
         except Exception as e:
             logger.error(f"Erkin xabarni adminga yuborishda xato: {e}")
