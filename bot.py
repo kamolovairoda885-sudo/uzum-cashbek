@@ -29,23 +29,113 @@ CASHBACK_10000 = int(os.getenv("CASHBACK_10000", "10000"))
 CASHBACK_7000 = int(os.getenv("CASHBACK_7000", "7000"))
 CASHBACK_5000 = int(os.getenv("CASHBACK_5000", "5000"))
 CASHBACK_3000 = int(os.getenv("CASHBACK_3000", "3000"))
-
 PRODUCTS = {
-    "pods_pro_2": {"uz": "🎧 Pods Pro 2", "ru": "🎧 Pods Pro 2", "options": {"photo_text": 10000, "text_only": 7000, "stars_only": 5000}},
-    "pods_pro_3": {"uz": "🎧 Pods Pro 3", "ru": "🎧 Pods Pro 3", "options": {"photo_text": 10000, "text_only": 7000, "stars_only": 5000}},
-    "smart_watch": {"uz": "⌚ Smart Watch", "ru": "⌚ Smart Watch", "options": {"photo_text": 10000, "text_only": 7000, "stars_only": 5000}},
-    "charger_20w_2pin": {"uz": "🔌 20W 2-pin zaryadlovchi", "ru": "🔌 Зарядное устройство 20W, 2-pin", "options": {"photo_text": 5000, "text_only": 3000}},
-    "charger_20w_3pin": {"uz": "🔌 20W 3-pin zaryadlovchi", "ru": "🔌 Зарядное устройство 20W, 3-pin", "options": {"photo_text": 5000, "text_only": 3000}},
-    "charger_25w": {"uz": "🔌 25W zaryadlovchi", "ru": "🔌 Зарядное устройство 25W", "options": {"photo_text": 5000, "text_only": 3000}},
-    "samsung_charger": {"uz": "🔌 Samsung zaryadlovchi", "ru": "🔌 Зарядное устройство Samsung", "options": {"text_only": 3000}},
-    "charger_20w_3pin_set": {"uz": "🔌 20W 3-pin to'plam: galovka + kabel", "ru": "🔌 Комплект 20W 3-pin: блок + кабель", "options": {"photo_text": 10000, "text_only": 7000, "stars_only": 5000}},
-    "charger_35w_typec": {"uz": "🔌 35W Type-C → Type-C zaryadlovchi", "ru": "🔌 Зарядное устройство 35W Type-C → Type-C", "options": {"photo_text": 5000, "text_only": 3000}},
+    "pods_pro_2": {
+        "uz": "🎧 Pods Pro 2",
+        "ru": "🎧 Pods Pro 2",
+        "options": {
+            "photo_text": 10000,
+            "text_only": 7000,
+            "stars_only": 5000,
+        },
+    },
+
+    "pods_pro_3": {
+        "uz": "🎧 Pods Pro 3",
+        "ru": "🎧 Pods Pro 3",
+        "options": {
+            "photo_text": 10000,
+            "text_only": 7000,
+            "stars_only": 5000,
+        },
+    },
+
+    "smart_watch": {
+        "uz": "⌚ Smart Watch",
+        "ru": "⌚ Smart Watch",
+        "options": {
+            "photo_text": 10000,
+            "text_only": 7000,
+            "stars_only": 5000,
+        },
+    },
+
+    "charger_20w_2pin": {
+        "uz": "🔌 20W 2-pin zaryadlovchi",
+        "ru": "🔌 Зарядное устройство 20W, 2-pin",
+        "options": {
+            "photo_text": 5000,
+            "text_only": 3000,
+        },
+    },
+
+    "charger_20w_3pin": {
+        "uz": "🔌 20W 3-pin zaryadlovchi",
+        "ru": "🔌 Зарядное устройство 20W, 3-pin",
+        "options": {
+            "photo_text": 5000,
+            "text_only": 3000,
+        },
+    },
+
+    "charger_25w": {
+        "uz": "🔌 25W zaryadlovchi",
+        "ru": "🔌 Зарядное устройство 25W",
+        "options": {
+            "photo_text": 5000,
+            "text_only": 3000,
+        },
+    },
+
+    "samsung_charger": {
+        "uz": "🔌 Samsung zaryadlovchi",
+        "ru": "🔌 Зарядное устройство Samsung",
+        "options": {
+            "any_review": 3000,
+        },
+    },
+
+    "charger_20w_3pin_set": {
+        "uz": "🔌 20W 3-pin to'plam: galovka + kabel",
+        "ru": "🔌 Комплект 20W 3-pin: блок + кабель",
+        "options": {
+            "photo_text": 10000,
+            "text_only": 7000,
+            "stars_only": 5000,
+        },
+    },
+
+    "charger_35w_typec": {
+        "uz": "🔌 35W Type-C → Type-C zaryadlovchi",
+        "ru": "🔌 Зарядное устройство 35W Type-C → Type-C",
+        "options": {
+            "photo_text": 5000,
+            "text_only": 3000,
+        },
+    },
 }
 
+
 REVIEW_LABELS = {
-    "photo_text": {"uz": "5⭐ + matnli sharh + rasm", "ru": "5⭐ + текстовый отзыв + фото"},
-    "text_only": {"uz": "5⭐ + matnli sharh, rasmsiz", "ru": "5⭐ + текстовый отзыв без фото"},
-    "stars_only": {"uz": "faqat 5⭐", "ru": "только 5⭐"},
+    "photo_text": {
+        "uz": "5⭐ + matnli sharh + rasm",
+        "ru": "5⭐ + текстовый отзыв + фото",
+    },
+
+    "text_only": {
+        "uz": "5⭐ + matnli sharh, rasmsiz",
+        "ru": "5⭐ + текстовый отзыв без фото",
+    },
+
+    "stars_only": {
+        "uz": "Faqat 5⭐",
+        "ru": "Только 5⭐",
+    },
+
+    "any_review": {
+        "uz": "5⭐ sharh — rasmli yoki rasmsiz",
+        "ru": "Отзыв 5⭐ — с фото или без фото",
+    },
 }
 
 # Bir kunda bir xaridor necha marta cashback so'rashi mumkin
@@ -1072,20 +1162,67 @@ async def cash_review(callback: CallbackQuery, state: FSMContext):
     await callback.message.edit_text("📸 Endi «Qoldirilgan sharhlar» bo'limidan skrinshot yuboring." if lang == "uz" else "📸 Теперь отправьте скриншот из раздела «Оставленные отзывы».")
     await state.set_state(CashbackState.waiting_screenshot); await callback.answer()
 
-
 @dp.message(CashbackState.waiting_screenshot)
-async def cashback_screenshot(message: Message, state: FSMContext):
+async def cashback_screenshot(
+    message: Message,
+    state: FSMContext
+):
     lang = get_user_language(message.from_user.id)
-    if message.photo:
-        file_id = message.photo[-1].file_id; unique_id = message.photo[-1].file_unique_id
-    elif message.document:
-        file_id = message.document.file_id; unique_id = message.document.file_unique_id
-    else:
-        await message.answer("Iltimos, skrinshotni rasm yoki fayl ko'rinishida yuboring." if lang == "uz" else "Отправьте скриншот как фото или файл."); return
-    await state.update_data(screenshot_file_id=file_id, screenshot_unique_id=unique_id)
-    await message.answer("2-qadam: Karta raqamingizni yuboring.\nMasalan: 8600 1234 5678 9012" if lang == "uz" else "Шаг 2: Отправьте номер карты.")
-    await state.set_state(CashbackState.waiting_card)
 
+    # AI yoki OCR tekshiruvi mavjud emas.
+    # Bot faqat rasmni qabul qiladi.
+    # Rasm mazmunini admin qo'lda tekshiradi.
+
+    if message.photo:
+        file_id = message.photo[-1].file_id
+        unique_id = message.photo[-1].file_unique_id
+
+    elif (
+        message.document
+        and message.document.mime_type
+        and message.document.mime_type.startswith("image/")
+    ):
+        file_id = message.document.file_id
+        unique_id = message.document.file_unique_id
+
+    else:
+        await message.answer(
+            (
+                "❌ Skrinshot qabul qilinmadi.\n\n"
+                "Iltimos, skrinshotni rasm yoki rasm fayli "
+                "ko'rinishida yuboring."
+            )
+            if lang == "uz"
+            else
+            (
+                "❌ Скриншот не принят.\n\n"
+                "Пожалуйста, отправьте скриншот как фотографию "
+                "или файл изображения."
+            )
+        )
+        return
+
+    await state.update_data(
+        screenshot_file_id=file_id,
+        screenshot_unique_id=unique_id,
+    )
+
+    await message.answer(
+        (
+            "2-qadam: Karta raqamingizni yuboring.\n\n"
+            "Masalan:\n"
+            "8600 1234 5678 9012"
+        )
+        if lang == "uz"
+        else
+        (
+            "Шаг 2: Отправьте номер карты.\n\n"
+            "Например:\n"
+            "8600 1234 5678 9012"
+        )
+    )
+
+    await state.set_state(CashbackState.waiting_card)
 
 @dp.message(CashbackState.waiting_card)
 async def cashback_card(message: Message, state: FSMContext):
@@ -1657,104 +1794,222 @@ async def admin_photo_file_id(message: Message, state: FSMContext):
 # =========================
 
 @dp.message(F.text & ~F.text.startswith("/"))
-async def free_message(message: Message, state: FSMContext):
+async def free_message(
+    message: Message,
+    state: FSMContext
+):
+    # Adminning oddiy xabarlarini bu handler qabul qilmaydi.
     if message.from_user.id == ADMIN_ID:
         return
 
-    # Tugmalar har doim ishlashi kerak
     known_buttons = [
-        "💰 Cashback olish", "💰 Получить cashback",
-        "📝 Shikoyat qoldirish", "📝 Оставить жалобу",
-        "🌐 Tilni o'zgartirish", "🌐 Изменить язык",
-        "🧾 Chek so'rash", "🧾 Запросить чек",
-        "⏭ O'tkazib yuborish", "⏭ Пропустить",
-    ]
-    if message.text in known_buttons:
-        return
+        "💰 Cashback olish",
+        "💰 Получить cashback",
 
-    current_state = await state.get_state()
-    if current_state is not None:
+        "📝 Shikoyat qoldirish",
+        "📝 Оставить жалобу",
+
+        "🌐 Tilni o'zgartirish",
+        "🌐 Изменить язык",
+
+        "🧾 Chek so'rash",
+        "🧾 Запросить чек",
+
+        "⏭ O'tkazib yuborish",
+        "⏭ Пропустить",
+    ]
+
+    # Menyu tugmalari erkin xabar sifatida adminga bormaydi.
+    if message.text in known_buttons:
         return
 
     lang = get_user_language(message.from_user.id)
 
-    known_buttons = [
-        "💰 Cashback olish", "💰 Получить cashback",
-        "📝 Shikoyat qoldirish", "📝 Оставить жалобу",
-        "🌐 Tilni o'zgartirish", "🌐 Изменить язык",
-        "🧾 Chek so'rash", "🧾 Запросить чек",
-        "⏭ O'tkazib yuborish", "⏭ Пропустить",
-    ]
+    # Xaridorning eski yoki tugallanmay qolgan state holati
+    # erkin xabar yuborishga to'sqinlik qilmasligi uchun
+    # state tozalanadi.
+    current_state = await state.get_state()
 
-    if message.text in known_buttons:
+    if current_state is not None:
+        await state.clear()
+
+    if not ADMIN_ID:
+        await message.answer(
+            (
+                "❌ Hozircha admin bilan bog'lanib bo'lmadi. "
+                "Keyinroq qayta urinib ko'ring."
+            )
+            if lang == "uz"
+            else
+            (
+                "❌ Сейчас не удалось связаться с администратором. "
+                "Попробуйте позже."
+            ),
+            reply_markup=main_menu(lang),
+        )
         return
 
-    # Adminga xabar yuborish
-    if ADMIN_ID:
-        try:
-            username = f"@{message.from_user.username}" if message.from_user.username else message.from_user.full_name
-            admin_text = (
-                f"💬 Xaridor xabar yozdi\n\n"
-                f"👤 Xaridor: {username}\n"
-                f"🆔 Telegram ID: {message.from_user.id}\n\n"
-                f"📝 Xabar:\n{message.text}"
+    username = (
+        f"@{message.from_user.username}"
+        if message.from_user.username
+        else message.from_user.full_name
+    )
+
+    admin_text = (
+        "💬 Xaridor xabar yozdi\n\n"
+        f"👤 Xaridor: {username}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
+        f"📝 Xabar:\n{message.text}"
+    )
+
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(
+        text="✉️ Javob berish",
+        callback_data=f"free_reply:{message.from_user.id}",
+    )
+
+    keyboard.adjust(1)
+
+    try:
+        await bot.send_message(
+            chat_id=ADMIN_ID,
+            text=admin_text,
+            reply_markup=keyboard.as_markup(),
+        )
+
+    except Exception as error:
+        logger.error(
+            f"Erkin xabarni adminga yuborishda xato: {error}"
+        )
+
+        await message.answer(
+            (
+                "❌ Xabarni adminga yuborishda xato yuz berdi. "
+                "Keyinroq qayta urinib ko'ring."
             )
-            kb = InlineKeyboardBuilder()
-            kb.button(text="✉️ Javob berish", callback_data=f"free_reply:{message.from_user.id}")
-            kb.adjust(1)
-            await bot.send_message(ADMIN_ID, admin_text, reply_markup=kb.as_markup())
-        except Exception as e:
-            logger.error(f"Erkin xabarni adminga yuborishda xato: {e}")
+            if lang == "uz"
+            else
+            (
+                "❌ Произошла ошибка при отправке сообщения "
+                "администратору. Попробуйте позже."
+            ),
+            reply_markup=main_menu(lang),
+        )
+        return
 
     await message.answer(
-        "✅ Xabaringiz qabul qilindi. Tez orada javob beriladi."
+        (
+            "✅ Xabaringiz adminga yuborildi.\n\n"
+            "Tez orada shu bot orqali javob beriladi."
+        )
         if lang == "uz"
-        else "✅ Ваше сообщение принято. Ответ придёт в ближайшее время.",
-        reply_markup=main_menu(lang)
+        else
+        (
+            "✅ Ваше сообщение отправлено администратору.\n\n"
+            "Ответ придёт через этого бота."
+        ),
+        reply_markup=main_menu(lang),
     )
 
 
 @dp.callback_query(F.data.startswith("free_reply:"))
-async def free_reply_callback(callback: CallbackQuery, state: FSMContext):
+async def free_reply_callback(
+    callback: CallbackQuery,
+    state: FSMContext
+):
     if callback.from_user.id != ADMIN_ID:
-        await callback.answer("Ruxsat yo'q.", show_alert=True)
+        await callback.answer(
+            "Ruxsat yo'q.",
+            show_alert=True,
+        )
         return
 
-    target_id = int(callback.data.split(":")[1])
-    await state.update_data(free_reply_target_id=target_id)
-    await callback.message.answer("✉️ Xaridorga yuboriladigan javobni yozing:")
-    await state.set_state(AdminReplyState.waiting_free_reply)
+    try:
+        target_id = int(callback.data.split(":")[1])
+
+    except (ValueError, IndexError):
+        await callback.answer(
+            "Xaridor ID raqami noto'g'ri.",
+            show_alert=True,
+        )
+        return
+
+    # Adminning avvalgi state holati javob berishga
+    # to'sqinlik qilmasligi uchun tozalanadi.
+    await state.clear()
+
+    await state.update_data(
+        free_reply_target_id=target_id
+    )
+
+    await state.set_state(
+        AdminReplyState.waiting_free_reply
+    )
+
+    await callback.message.answer(
+        "✉️ Xaridorga yuboriladigan javobni yozing:"
+    )
+
     await callback.answer()
 
 
 @dp.message(AdminReplyState.waiting_free_reply)
-async def admin_free_reply(message: Message, state: FSMContext):
+async def admin_free_reply(
+    message: Message,
+    state: FSMContext
+):
     if message.from_user.id != ADMIN_ID:
         return
 
+    if not message.text:
+        await message.answer(
+            "❌ Javobni matn ko'rinishida yuboring."
+        )
+        return
+
     data = await state.get_data()
+
     target_id = data.get("free_reply_target_id")
 
     if not target_id:
-        await message.answer("Xaridor topilmadi.")
+        await message.answer(
+            "❌ Xaridor topilmadi."
+        )
+
         await state.clear()
         return
 
     lang = get_user_language(target_id)
 
+    customer_text = (
+        f"✉️ Admin javobi:\n\n{message.text.strip()}"
+        if lang == "uz"
+        else
+        f"✉️ Ответ администратора:\n\n{message.text.strip()}"
+    )
+
     try:
         await bot.send_message(
-            target_id,
-            f"✉️ Admin javobi:\n\n{message.text.strip()}",
-            reply_markup=main_menu(lang)
+            chat_id=target_id,
+            text=customer_text,
+            reply_markup=main_menu(lang),
         )
-        await message.answer("✅ Javob xaridorga yuborildi.")
-    except Exception as e:
-        logger.error(f"Erkin javob yuborishda xato: {e}")
-        await message.answer("❌ Xabarni yuborishda xato.")
+
+        await message.answer(
+            "✅ Javob xaridorga yuborildi."
+        )
+
+    except Exception as error:
+        logger.error(
+            f"Erkin javob yuborishda xato: {error}"
+        )
+
+        await message.answer(
+            "❌ Javobni xaridorga yuborishda xato yuz berdi."
+        )
 
     await state.clear()
-
 # =========================
 # AVTOMATIK KUNLIK HISOBOT
 # =========================
