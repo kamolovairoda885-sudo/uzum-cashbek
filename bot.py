@@ -61,8 +61,8 @@ PRODUCTS = {
     },
 
     "charger_20w_2pin": {
-        "uz": "🔌 20W 2-pin zaryadlovchi",
-        "ru": "🔌 Зарядное устройство 20W, 2-pin",
+        "uz": "🔌 20W 2-pin Iphone zaryadlovchi",
+        "ru": "🔌 Зарядное устройство Iphone 20W, 2-pin",
         "options": {
             "photo_text": 5000,
             "text_only": 3000,
@@ -70,8 +70,8 @@ PRODUCTS = {
     },
 
     "charger_20w_3pin": {
-        "uz": "🔌 20W 3-pin zaryadlovchi",
-        "ru": "🔌 Зарядное устройство 20W, 3-pin",
+        "uz": "🔌 20W  3-pin Iphone zaryadlovchi",
+        "ru": "🔌 Зарядное устройство Iphone 20W, 3-pin",
         "options": {
             "photo_text": 5000,
             "text_only": 3000,
@@ -79,8 +79,8 @@ PRODUCTS = {
     },
 
     "charger_25w": {
-        "uz": "🔌 25W zaryadlovchi",
-        "ru": "🔌 Зарядное устройство 25W",
+        "uz": "🔌 25W Iphone zaryadlovchi",
+        "ru": "🔌 Зарядное устройство Iphone 25W",
         "options": {
             "photo_text": 5000,
             "text_only": 3000,
@@ -88,8 +88,8 @@ PRODUCTS = {
     },
 
     "samsung_charger": {
-        "uz": "🔌 Samsung zaryadlovchi",
-        "ru": "🔌 Зарядное устройство Samsung",
+        "uz": "🔌 Samsung zaryadlovchi 45W",
+        "ru": "🔌 Зарядное устройство Samsung 45W",
         "options": {
             "any_review": 3000,
         },
@@ -106,8 +106,8 @@ PRODUCTS = {
     },
 
     "charger_35w_typec": {
-        "uz": "🔌 35W Type-C → Type-C zaryadlovchi",
-        "ru": "🔌 Зарядное устройство 35W Type-C → Type-C",
+        "uz": "🔌 35W Type-C → Type-C Iphone zaryadlovchi",
+        "ru": "🔌 Зарядное устройство Iphone 35W Type-C → Type-C",
         "options": {
             "photo_text": 5000,
             "text_only": 3000,
